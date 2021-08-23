@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 public class WarehouseRepository extends BaseRepository<Warehouse> {
 
     public WarehouseRepository(Firestore firestore) {
-        super(firestore, CmnConst.WAREHOUSE_COLLECTION);
+        super(firestore, CmnConst.WAREHOUSES_COLLECTION);
     }
 
 }

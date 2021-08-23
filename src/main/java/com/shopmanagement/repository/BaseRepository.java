@@ -6,37 +6,33 @@ import com.shopmanagement.common.CmnConst;
 import com.shopmanagement.common.TranslatorCode;
 import com.shopmanagement.component.Translator;
 import com.shopmanagement.entity.BaseEntity;
+import com.shopmanagement.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.GenericTypeResolver;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Slf4j
 @SuppressWarnings("unchecked")
 public abstract class BaseRepository<T extends BaseEntity> {
-    private final CollectionReference collectionReference;
-    private final Class<T> parameterizedType;
-    private final String collectionName;
+    protected final CollectionReference collectionReference;
+    protected final Class<T> parameterizedType;
+    protected final String collectionName;
 
     public BaseRepository(Firestore firestore, String collectionName) {
         this.collectionReference = firestore.collection(collectionName);
         this.collectionName = collectionName;
-        this.parameterizedType = getParameterizedType();
-    }
-
-    private Class<T> getParameterizedType(){
-        return (Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        this.parameterizedType = (Class<T>) GenericTypeResolver.resolveTypeArgument(getClass(), BaseRepository.class);
     }
 
     /**
      * Find all documents from collection
      *
-     * @return
+     * @return List<T> of collection
      */
     public List<T> findAll() {
         try {
@@ -112,10 +108,10 @@ public abstract class BaseRepository<T extends BaseEntity> {
      * @param data
      * @return
      */
-    public boolean save(T data) {
+    public boolean save(BaseEntity data) {
         try {
             if (data.getId() == null){
-                data.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+                data.setId(StringUtil.generateRandomAlphanumeric());
             }
             ApiFuture<WriteResult> writeResult = collectionReference.document(data.getId()).set(data);
             log.info("{}-{} saved at{}", collectionName, data.getId(), writeResult.get().getUpdateTime());
@@ -127,12 +123,6 @@ public abstract class BaseRepository<T extends BaseEntity> {
         return false;
     }
 
-    /**
-     * Delete document by id
-     *
-     * @param documentId
-     * @return
-     */
     public boolean deleteById(String documentId) {
         try {
             ApiFuture<WriteResult> writeResult = collectionReference.document(documentId)

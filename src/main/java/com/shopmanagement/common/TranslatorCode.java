@@ -12,4 +12,6 @@ public class TranslatorCode {
     public static final String ERROR_DELETE_DOCUMENT = "error.deleteDocument";
     public static final String ERROR_GET_ALL_DOCUMENT = "error.getAllDocument";
     public static final String ERROR_GET_DOCUMENT_BY_ID = "error.getDocumentById";
+
+    public static final String LOG_ERROR_USER_NOT_FOUND= "error.userNotFoundWithUsername";
 }

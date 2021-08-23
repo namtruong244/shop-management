@@ -2,8 +2,7 @@ package com.shopmanagement.util;
 
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.util.Random;
 
 public class StringUtil {
 
@@ -17,6 +16,22 @@ public class StringUtil {
     }
 
     public static String createTranslatorCode(String... params){
-        return Arrays.stream(params).collect(Collectors.joining("."));
+        return String.join(".", params);
+    }
+
+     public static String generateRandomAlphanumeric(){
+        return generateRandomAlphanumeric(20);
+    }
+
+    public static String generateRandomAlphanumeric(int targetLength) {
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        Random random = new Random();
+
+        return random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 }

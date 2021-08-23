@@ -5,24 +5,22 @@ import com.shopmanagement.entity.Product;
 import com.shopmanagement.entity.Warehouse;
 import com.shopmanagement.service.ProductService;
 import com.shopmanagement.service.WarehouseService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
     private final WarehouseService warehouseService;
 
-    public ProductController(ProductService productService, WarehouseService warehouseService) {
-        this.productService = productService;
-        this.warehouseService = warehouseService;
-    }
-
-    @GetMapping("products")
+    @GetMapping(value = "products")
     public ResponseEntity<?> getAllProduct() {
         return productService.findAllDocuments();
     }
